@@ -14,8 +14,7 @@ def convert_image(img):
     return byte_im
 
 
-def generate_output(upload):
-    image = Image.open(upload)
+def generate_output(image):
     image_w_barcodes, detected_barcodes = get_barcodes(image)
     col1.write("Original Image:")
     col1.image(image_w_barcodes)
@@ -27,6 +26,7 @@ def generate_output(upload):
 
 def get_barcodes(image_loaded):
     img = np.array(image_loaded)
+    print(image_loaded)
     detected_barcodes = decode(image_loaded)
 
     # If not detected then print the message
@@ -63,9 +63,21 @@ if __name__ == "__main__":
 
     col1, col2 = st.columns(2)
     my_upload = st.sidebar.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
+    img_file_buffer = st.camera_input("Take a photo of barcodes")
 
+    # Photo taker
+    if img_file_buffer is not None:
+        # To read image file buffer as bytes:
+        bytes_photo = img_file_buffer.getvalue()
+        # Check the type of bytes_data:
+        # Should output: <class 'bytes'>
+        print(type(bytes_photo))
+        generate_output(image=bytes_photo)
+
+    # File downloader
     if my_upload:
+        print(type(my_upload))
         if my_upload.size > MAX_FILE_SIZE:
             st.error("The uploaded file is too large. Please upload an image smaller than 10MB.")
         else:
-            generate_output(upload=my_upload)
+            generate_output(image=Image.open(my_upload))
