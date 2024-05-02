@@ -1,10 +1,10 @@
-import cv2
-import streamlit as st
-import numpy as np
-
-from pyzbar.pyzbar import decode
-from PIL import Image
 from io import BytesIO
+
+import cv2
+import numpy as np
+import streamlit as st
+from PIL import Image
+from pyzbar.pyzbar import decode
 
 
 def convert_image(img):
@@ -26,7 +26,6 @@ def generate_output(image):
 
 def get_barcodes(image_loaded):
     img = np.array(image_loaded)
-    print(image_loaded)
     detected_barcodes = decode(image_loaded)
 
     # If not detected then print the message
@@ -69,14 +68,11 @@ if __name__ == "__main__":
     if img_file_buffer is not None:
         # To read image file buffer as bytes:
         bytes_photo = img_file_buffer.getvalue()
-        # Check the type of bytes_data:
-        # Should output: <class 'bytes'>
-        print(type(bytes_photo))
-        generate_output(image=bytes_photo)
+        # print(type(bytes_photo))
+        generate_output(image=Image.open(BytesIO(bytes_photo)))
 
     # File downloader
     if my_upload:
-        print(type(my_upload))
         if my_upload.size > MAX_FILE_SIZE:
             st.error("The uploaded file is too large. Please upload an image smaller than 10MB.")
         else:
